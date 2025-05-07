@@ -61,38 +61,71 @@ print(estudiantes_bus_estratos_bajos)
 estudiantes_tarde_estrato_mayor_3 = data_frame_asistencia.query('estado == "justificado" and estrato in [3,4,5,6] ')
 print(estudiantes_tarde_estrato_mayor_3)
 #14. Reportar estudiantes que usan transportes ecológicos
-estudiantes_transporte_ecologicos = data_frame_asistencia.query('medio_transporte == "a pie" and medio_transporte == "bicicleta"')
+estudiantes_transporte_ecologicos = data_frame_asistencia.query('medio_transporte in ["a pie", "bicicleta"]')
 print(estudiantes_transporte_ecologicos)
 #15. Reportar estudiantes que faltan y usan carros para transportarse 
+estudiantes_faltan_en_carro = data_frame_asistencia.query('estado == "inasistencia" and medio_transporte == "carro"')
+print(estudiantes_faltan_en_carro)
 #16. Reportar estudiantes que asisten son estratos altos y caminan
+estudiantes_asisten_altos_caminan = data_frame_asistencia.query('estado == "asistio" and estrato >= 4 and medio_transporte == "a pie"')
+print(estudiantes_asisten_altos_caminan)
 #17. Reportar estudiantes que son estratos bajos y justifican su inasistencia
+estudiantes_bajos_justifican = data_frame_asistencia.query('estrato < 3 and estado == "justificado"')
+print(estudiantes_bajos_justifican)
 #18. Reportar estudiantes que son estratos altos y justifican su inasistencia
+estudiantes_altos_justifican = data_frame_asistencia.query('estrato >= 4 and estado == "justificado"')
+print(estudiantes_altos_justifican)
 #19. Reportar estudiantes que usan carro y jsutrifican su inasistencia
+estudiantes_carro_justifican = data_frame_asistencia.query('medio_transporte == "carro" and estado == "justificado"')
+print(estudiantes_carro_justifican)
 #20. Reportar estudiantes que faltan y usan metro y son estratos medios.
+estudiantes_faltan_metro_medios = data_frame_asistencia.query('estado == "inasistencia" and medio_transporte == "metro" and estrato == 3')
+print(estudiantes_faltan_metro_medios)
  
 
 #AGRUPACIONES Y CONTEOS SOBRE LOS DATOS
 #1. Contar cada registro de asistencia por cada estado
-#conteo_registros_por_estados = data_frame_asistencia.groupby('estado').size()
-#print(conteo_registros_por_estados)
-
+conteo_registros_por_estados = data_frame_asistencia.groupby('estado').size()
+print(conteo_registros_por_estados)
 #2. Número de registro por estrato
-#conteo_regristros_por_estrato = data_frame_asistencia.groupby('estrato').size()
-#print(conteo_regristros_por_estrato)
+conteo_regristros_por_estrato = data_frame_asistencia.groupby('estrato').size()
+print(conteo_regristros_por_estrato)
 #3. Cantidad de estudiantes por medio de transporte
-#4. Cantidad de registros por grupo 
+cantidad_estudiantes_medio_transporte = data_frame_asistencia.groupby('medio_transporte').size()
+print(cantidad_estudiantes_medio_transporte)
+#4. Cantidad de registros por grupo
+cantidad_por_grupo = data_frame_asistencia.groupby('id_grupo').size()
+print(cantidad_por_grupo)
 #5. Cruce entre estado y medio de transporte
-#cruce_estado_medio_transporte = data_frame_asistencia.groupby(['estado', 'medio_transporte']).size()
-#print(cruce_estado_medio_transporte)
+cruce_estado_medio_transporte = data_frame_asistencia.groupby(['estado', 'medio_transporte']).size()
+print(cruce_estado_medio_transporte)
 #6. Promedio de estrato por estado de asistencia
-#prom_estrato_estado = data_frame_asistencia.groupby('estado')['estrato'].mean()
-#print(prom_estrato_estado)
+prom_estrato_estado = data_frame_asistencia.groupby('estado')['estrato'].mean()
+print(prom_estrato_estado)
 #7. Estrato promedio por medio de transporte
+prom_estrato_medio = data_frame_asistencia.groupby('medio_transporte')['estrato'].mean()
+print(prom_estrato_medio)
 #8. Máximo estrato por estado de asistencia
-#9. Mínimo estrato or estado de asistencia
+max_estrato_por_estado = data_frame_asistencia.groupby('estado')['estrato'].max()
+print(max_estrato_por_estado)
+#9. Mínimo estrato por estado de asistencia
+min_estrato_por_estado = data_frame_asistencia.groupby('estado')['estrato'].min()
+print(min_estrato_por_estado)
 #10. Conteo de asistencias por grupo y por estado
+conteo_asistencia_grupo_estado = data_frame_asistencia.groupby(['estado', 'id_grupo']).size()
+print(conteo_asistencia_grupo_estado)
 #11. Transporte usado por grupo
+transporte_grupo = data_frame_asistencia.groupby(['id_grupo','medio_transporte']).size()
+print(transporte_grupo)
 #12. Cuantos grupos distintos registraron asistencia por fecha
-#13. Promedio de estrato por fecha 
+grupos_distintos_fecha = data_frame_asistencia.groupby('fecha')['id_grupo'].nunique()
+print(grupos_distintos_fecha)
+#13. Promedio de estrato por fecha
+prom_estrato_fecha = data_frame_asistencia.groupby('fecha')['estrato'].mean()
+print(prom_estrato_fecha) 
 #14. Número de tipos de estado por transporte
+tipo_estado_transporte = data_frame_asistencia.groupby('medio_transporte')['estado'].size()
+print(tipo_estado_transporte)
 #15. Primer registro de cada grupo 
+primer_registro_grupo = data_frame_asistencia.groupby('id_grupo').first()
+print(primer_registro_grupo)

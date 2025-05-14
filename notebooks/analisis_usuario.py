@@ -5,6 +5,7 @@ print(data_frame_usuarios)
 
 print(data_frame_usuarios['especialidad'].unique)
 print(data_frame_usuarios['tipo_usuario'].unique)
+print(data_frame_usuarios['fecha_nacimiento'].unique)
 
 
 #1. Solo estudiantes
@@ -87,17 +88,56 @@ print(usuarios_nacidos_en_nuevo_milenio)
 
 
 #1. total por tipo
+total_por_tipo = data_frame_usuarios['tipo_usuario'].value_counts()
+print("Total por tipo de usuario:\n", total_por_tipo)
 #2. total por especialidad
+total_por_especialidad = data_frame_usuarios['especialidad'].value_counts()
+print("Total por especialidad:\n", total_por_especialidad)
 #3. cantidad de especialidades distintas
+num_especialidades = data_frame_usuarios['especialidad'].nunique()
+print("Número de especialidades distintas:", num_especialidades)
 #4. tipos de usuario por especialidad
+tipos_por_especialidad = data_frame_usuarios.groupby('especialidad')['tipo_usuario'].unique()
+print("Tipos de usuario por especialidad:\n", tipos_por_especialidad)
 #5. usuario mas antiguo por tipo
+usuarios_con_fecha_valida = data_frame_usuarios[data_frame_usuarios['fecha_nacimiento'].notna()]
+idx_mas_antiguo_por_tipo = usuarios_con_fecha_valida.groupby('tipo_usuario')['fecha_nacimiento'].idxmin()
+usuario_mas_antiguo_por_tipo = data_frame_usuarios.loc[idx_mas_antiguo_por_tipo]
+print("Usuario más antiguo por tipo:\n", usuario_mas_antiguo_por_tipo)
 #6. usuario mas joven por tipo
+usuarios_validos = data_frame_usuarios[data_frame_usuarios['fecha_nacimiento'].notna()]
+idx_mas_joven = usuarios_validos.groupby('tipo_usuario')['fecha_nacimiento'].idxmax()
+usuario_mas_joven_por_tipo = data_frame_usuarios.loc[idx_mas_joven]
+print("Usuario más joven por tipo:\n", usuario_mas_joven_por_tipo)
 #7. primer registro por tipo
+primer_registro_por_tipo = data_frame_usuarios.groupby('tipo_usuario').first()
+print("Primer registro por tipo:\n", primer_registro_por_tipo)
 #8. ultimo registro por tipo
+ultimo_registro_por_tipo = data_frame_usuarios.groupby('tipo_usuario').last()
+print("Último registro por tipo:\n", ultimo_registro_por_tipo)
 #9. combinacion tipo por especialidad
+combinacion_tipo_especialidad = pd.crosstab(data_frame_usuarios['especialidad'], data_frame_usuarios['tipo_usuario'])
+print("Combinación tipo por especialidad:\n", combinacion_tipo_especialidad)
 #10. el mas viejo por especialidad
+usuarios_validos = data_frame_usuarios[data_frame_usuarios['fecha_nacimiento'].notna()]
+idx_mas_viejo = usuarios_validos.groupby('especialidad')['fecha_nacimiento'].idxmin()
+mas_viejo_por_especialidad = data_frame_usuarios.loc[idx_mas_viejo]
+print("Usuario más viejo por especialidad:\n", mas_viejo_por_especialidad)
 #11. cuantos de cada especialidad por tipo
+cantidad_por_tipo_y_especialidad = data_frame_usuarios.groupby(['tipo_usuario', 'especialidad']).size().unstack(fill_value=0)
+print("Cantidad por tipo y especialidad:\n", cantidad_por_tipo_y_especialidad)
 #12. edad promedio por tipo
+hoy = pd.Timestamp.today()
+data_frame_usuarios['edad'] = (hoy - data_frame_usuarios['fecha_nacimiento']).dt.days // 365
+edad_promedio_por_tipo = data_frame_usuarios.groupby('tipo_usuario')['edad'].mean()
 #13. años de nacimeinto mas frecuente por especialidad
+data_frame_usuarios['anio_nacimiento'] = data_frame_usuarios['fecha_nacimiento'].dt.year
+anio_frecuente_por_especialidad = data_frame_usuarios.groupby('especialidad')['anio_nacimiento'].agg(lambda x: x.mode().iloc[0] if not x.mode().empty else None)
+print("Año de nacimiento más frecuente por especialidad:\n", anio_frecuente_por_especialidad)
 #14. mes de nacimiento ams frecuente por tipo
+data_frame_usuarios['mes_nacimiento'] = data_frame_usuarios['fecha_nacimiento'].dt.month
+mes_frecuente_por_tipo = data_frame_usuarios.groupby('tipo_usuario')['mes_nacimiento'].agg(lambda x: x.mode().iloc[0] if not x.mode().empty else None)
+print("Mes de nacimiento más frecuente por tipo:\n", mes_frecuente_por_tipo)
 #15. UNA CONSULTA O FILTRO QUE UD PROPONGA
+usuarios_con_numeros_en_direccion = data_frame_usuarios[data_frame_usuarios['direccion'].str.contains(r'\d', na=False)]
+print("Usuarios con números en su dirección:\n", usuarios_con_numeros_en_direccion)
